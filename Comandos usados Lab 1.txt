@@ -1,0 +1,72 @@
+Comandos usados practica 1
+
+=============================================================
+
+No se Utilizaron Comandos 
+
+Comandos usados practica 2
+
+=============================================================
+
+
+date
+su
+sudo ip addr flush dev ens33
+sudo systemctl restart NetworkManager
+ip a
+nmcli device show
+cat /etc/resolv.conf
+sudo nmcli con add type ethernet ifname ens33 con-name static-ip \
+ipv4.addresses 192.168.1.100/24 \
+ipv4.gateway 192.168.1.1 \
+ipv4.dns "8.8.8.8 8.8.4.4" \
+ipv4.method manual
+sudo nmcli con up static-ip
+sudo nmcli connection delete static-ip
+sudo nmtui
+
+
+Comandos usados practica 3
+
+=============================================================
+
+date
+su
+cat /etc/sudoers
+sudo adduser leandro01
+sudo visudo  leandro01
+groups leandro01
+cat /etc/passwd
+sudo addgroup guest
+sudo adduser juan
+sudo usermod -aG guest juan
+groups juan
+sudo deluser juan
+sudo delgroup guest
+cat /etc/group
+
+
+Comandos usados practica 4
+
+=============================================================
+
+date
+su
+mkdir materia
+cd materia
+vi estudiante.txt
+:wq
+chmod 700 estudiante.txt
+ls -l estudiante.txt
+chmod 070 estudiante.txt
+mkdir materia2
+cp materia/estudiante.txt materia2/
+ls materia2
+rm -r materia
+ls -l
+
+
+
+
+
+
