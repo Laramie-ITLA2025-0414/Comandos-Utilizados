@@ -1,0 +1,72 @@
+comandos usados practica 1 
+
+=============================================================
+
+date
+su
+sudo apt update && sudo apt upgrade -y
+cat /etc/apt/sources.list
+apt-cache search bashtop
+sudo apt install git make -y
+git clone https://github.com/aristocratos/bashtop.git
+ls
+cd bashtop
+sudo make install
+cd ~/bashtop
+sudo make uninstall
+rm -rf ~/.config/bashtop
+sudo apt autoremove -y
+
+
+Comandos usados practica 2
+
+=============================================================
+
+date
+cat /etc/crontab
+crontab -e
+0 23 * * * sudo apt update && sudo apt upgrade -y
+0 3 * * 0 sudo reboot
+ctrl-x ,y
+crontab -l
+ls /tmp
+sudo apt update
+sudo apt install at
+sudo systemctl start atd
+sudo systemctl enable atd
+su
+sudo echo "rm -rf /tmp/*" | at now + 1 minute
+atq
+at -c (id -puede variar)
+
+
+Comandos Usados practica 3
+
+=============================================================
+
+date
+lsblk
+sudo fdisk /dev/sda
+sudo mkfs.ext4 /dev/sda1
+exit
+mkdir /home/leandro/Escritorio/mi_disco
+su
+sudo mount /dev/sda1 /home/leandro/Escritorio/mi_disco
+sudo chown $USER:$USER /home/leandro/Escritorio/mi_disco
+exit
+cd /home/leandro/Escritorio/mi_disco
+echo "Adrian Alcantara - Practica 3" > AdrianAlcantara.txt
+ls -la
+cd ~
+umount /home/leandro/Escritorio/mi_disco
+mount /dev/sda1 /mnt
+cd /mnt
+cat AdrianAlcantara.txt
+
+
+
+
+
+
+
+
