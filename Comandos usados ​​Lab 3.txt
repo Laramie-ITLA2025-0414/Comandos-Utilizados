@@ -1,0 +1,82 @@
+Comandos usados ​​practica 1
+
+
+=============================================================
+
+date
+su
+sudo nano /etc/default/grub
+sudo update-grub
+sudo reboot
+init=/bin/bash 
+F10
+mount -o remount,rw /
+passwd root
+exec /sbin/init
+
+
+Comandos usados ​​practica 2
+
+
+=============================================================
+
+date
+su
+nano /home/leandro/mi\_backup.sh
+#!/bin/bash
+
+fecha=$(date +"%d-%m-%Y:%H:%M")
+tar -czf "/home/leandro/backup\_$fecha.tar.gz" -C /home/leandro .
+echo "Backup creado: backup\_$fecha.tar.gz"
+
+chmod +x /home/leandro/mi\_backup.sh
+/home/leandro/mi\_backup.sh
+
+
+nano /home/leandro/copiar\_red.sh
+#!/bin/bash
+
+echo "¿Qué nombre deseas ponerle al archivo?"
+read nombre
+ip address > "/home/leandro/Escritorio/$nombre.txt"
+echo "Archivo creado: $nombre.txt"
+chmod +x /home/home/leandro/copiar\_red.sh
+/home/leandro/copiar\_red.sh
+cat /home/leandro/Escritorio/mi\_red1.txt
+
+
+Comandos usados ​​practica 3
+
+
+=============================================================
+
+date
+ipconfig
+ip a
+sudo apt update
+sudo apt install openssh-server -y
+sudo systemctl status ssh
+ssh leandro@ mi ip
+exit
+ssh-keygen
+dir C:\Users\L.Alcantara\.ssh\
+notepad C:\Users\L.Alcantara\.ssh\id_ed25519.pub
+mkdir /home/leandro/.ssh
+chmod 700 /home/leandro/.ssh
+nano /home/leandro/.ssh/authorized_keys
+chmod 600 /home/leandro/.ssh/authorized_keys
+sudo chown -R leandro:leandro /home/leandro/.ssh
+cd .ssh
+ls -la
+
+
+
+
+
+
+
+
+
+
+
+
