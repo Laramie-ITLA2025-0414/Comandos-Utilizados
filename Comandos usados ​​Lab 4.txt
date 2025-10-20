@@ -1,0 +1,129 @@
+Comandos usados ​​practica 1
+
+=============================================================
+
+su
+date
+cd /var/www/html
+sudo nano index.html
+
+<html>
+<h1>HOLA MUNDO</h1>
+</html>
+
+cat index.html
+cd
+cd /etc
+cd apache2
+ls
+cd sites-available
+ls
+sudo nano practica1.conf
+
+<VirtualHost *:80>
+    ServerName practica1.local
+    DocumentRoot /var/www/html/
+    <Directory /var/www/html/>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+
+cd /etc/apache2/sites-available
+sudo sed -i 's/\xc2\xa0/ /g' practica1.conf
+
+systemctl reload apache2
+sudo a2ensite practica1.conf
+
+<html>
+<h1>Nombre: Leandro Alcantara</h1>
+<h2>Matricula: 20250414</h2>
+<h3>Materia: Sistemas Operativos 3</h3>
+</html>
+
+<VirtualHost *:8080>
+    ServerName practica2.local
+    DocumentRoot /var/www/html/
+    <Directory /var/www/html/>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+sudo rm practica1.conf
+cat practica2.conf
+cd /etc/apache2/sites-available
+sudo sed -i 's/\xc2\xa0/ /g' practica2.conf
+sudo nano ports.conf
+sudo a2ensite practica2.conf
+
+Comandos usados practica 2
+
+=============================================================
+
+su 
+date
+sudo apt update && sudo apt upgrade -y
+sudo apt install postfix mailutils libsasl2-modules -y
+sudo nano /etc/postfix/main.cf
+
+# CONFIGURACIÓN BÁSICA
+myhostname = localhost
+mydomain = localhost
+myorigin = $mydomain
+
+# REDES Y DESTINOS
+inet_interfaces = localhost
+mynetworks = 127.0.0.0/8 [::1]/128
+mydestination = $myhostname, localhost
+
+# RELAY GMAIL
+relayhost = [smtp.gmail.com]:587
+
+# AUTENTICACIÓN GMAIL
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
+
+# SEGURIDAD TLS
+smtp_use_tls = yes
+smtp_tls_security_level = encrypt
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+
+# ALIASES
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+
+sudo nano /etc/postfix/sasl_passwd
+[smtp.gmail.com]:587    laramie.alcantara.cem@gmail.com:TU LLAVE
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+sudo systemctl restart postfix
+sudo systemctl enable postfix
+sudo systemctl status postfix
+sudo postfix check
+echo "Hola Leo, este es un correo de prueba desde mi servidor" | mail -s "Prueba desde Debian" leoalcantara631@gmail.com
+echo "Nombre: Laramie Alcantara Matricula: 2025-0414" | mail -s "MambruSeFueALaGuerra" os3conadrian@gmail.com
+
+Comandos usados ​​practica 3
+
+=============================================================
+
+su
+date
+sudo apt update && sudo apt upgrade -y
+sudo apt install cups ufw  cups-pdf -y
+sudo systemctl status cups y  ufw
+sudo ufw allow 631/tcp ---puerto de impresión
+sudo ufw allow ssh ---permitir el ssh
+sudo systemctl restart cups
+sudo cupsctl --remote-any --remote-admin --share-printers
+ip a
+http:// la ip:631---el puerto
+
+
+
+
