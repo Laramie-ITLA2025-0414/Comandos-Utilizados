@@ -1,0 +1,147 @@
+Comandos usados ​​practica 1
+
+=============================================================
+
+su
+date
+sudo apt update && sudo apt upgrade -y
+sudo apt install ssh -y 
+ip a
+su leandro
+ssh leandro2@ ip
+ssh-keygen
+ssh-copy-id leandro2@ip
+sudo apt install rsync -y 
+sudo systemctl start rsync 
+sudo systemctl enable rsync 
+cd Escritorio
+mkdir archivos
+cd archivos
+touch archivos{1..100}.txt
+mkdir archivos2
+cd archivos2
+rsync -azP /home/leandro/Escritorio/archivos/ leandro2@10.0.0.156:/home/leandro2/Escritorio/archivos2
+sudo nano /script.sh
+sudo chmod +x /script.sh
+crontab -e
+***** /bin/bash /script.sh
+mkdir prueba
+mkdir prueba3
+
+Comandos usados practica 2
+
+=============================================================
+
+su 
+date
+sudo apt update
+sudo apt install -y pacemaker corosync pcs
+sudo systemctl enable pcsd
+sudo systemctl start pcsd
+sudo systemctl status pcsd
+
+sudo nano /etc/hosts
+**Agregar estas líneas (si no existen):**
+
+10.0.0.150    node1
+10.0.0.156    node2 (tus ips)
+
+ping -c 2 node1
+ping -c 2 node2
+
+echo -e "ClusterPass123\nClusterPass123" | sudo passwd hacluster
+
+sudo pcs host auth node1 node2 -u hacluster -p ClusterPass123
+sudo pcs cluster setup mi_cluster node1 node2
+sudo pcs cluster start --all
+sudo pcs cluster enable --all
+sudo pcs status
+
+sudo pcs property set stonith-enabled=false
+sudo pcs property set no-quorum-policy=ignore
+sudo pcs property list
+
+sudo pcs resource create virtual_ip ocf:heartbeat:IPaddr2 \
+    ip=10.0.0.200 \
+    cidr_netmask=24 \
+    op monitor interval=10s
+
+ping 10.0.0.200
+
+Comandos usados ​​practica 3
+
+=============================================================
+
+su
+date
+sudo apt update && sudo apt upgrade -y
+sudo apt install apache2 -y 
+cd /var/www/html
+sudo truncate -s 0 index.html
+sudo nano index.html
+
+<html>
+<h1>SERVER1</h1>
+<p>LEANDRO ALCANTARA</p>
+**</**html>
+
+<html>
+<h1>SERVER2</h1>
+<p>LEANDRO ALCANTARA</p>
+**</**html>
+
+sudo apt install keepalived -y 
+systemctl start keepalived
+systemctl enable keepalived
+
+sudo nano /etc/keepalived/keepalived.conf
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface ens33
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 12345
+    }
+    virtual_ipaddress {
+        10.0.0.200/24
+    }
+}
+
+
+vrrp_instance VI_1 {
+    state BACKUP
+    interface ens33
+    virtual_router_id 51
+    priority 50
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 12345
+    }
+    virtual_ipaddress {
+        10.0.0.200/24
+    }
+}
+
+sudo systemctl restart keepalived
+sudo systemctl status keepalived
+
+http:/ip flotante
+
+
+
+
+
+
+
+
+
+
+
+
+
+
