@@ -1,0 +1,163 @@
+Comandos usados ​​practica 1
+
+=============================================================
+
+su
+date
+sudo apt update && sudo apt install nfs-kernel-server -y
+sudo mkdir /OS3
+cd /OS3
+touch Adrian{1..100}.txt
+sudo chown nobody:nogroup /OS3
+sudo chmod 777 /OS3
+sudo nano /etc/exports
+/OS3 10.0.0.156(rw,sync,no_subtree_check)
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+sudo systemctl enable nfs-kernel-server
+sudo systemctl status nfs-kernel-server
+sudo apt update && sudo apt install nfs-common -y
+sudo mkdir -p /mnt/OS3-1
+sudo mount -t nfs 10.0.0.150:/OS3 /mnt/OS3-1
+cd /mnt/OS3-1
+ls
+sudo nano /etc/fstab
+10.0.0.150:/OS3 /mnt/OS3-1 nfs defaults,_netdev 0 0
+sudo umount /mnt/OS3-1
+sudo mount -a
+cd /mnt/OS3-1
+ls
+cd /OS3
+nano Adrian99.txt
+sudo reboot
+ls /mnt/OS3-1/
+cat /mnt/OS3-1/Adrian99.txt
+
+Comandos usados practica 2
+
+=============================================================
+
+su 
+date
+sudo apt update && sudo apt install samba -y
+sudo mkdir /samba
+sudo groupadd smbusers
+sudo useradd -m -s /bin/bash -G smbusers adrian
+sudo smbpasswd -a adrian
+Contraseña: adrian123
+sudo chown -R adrian:smbusers /samba
+sudo chmod -R 770 /samba
+cd /samba
+touch adrian{1..100}.txt
+sudo nano /etc/samba/smb.conf
+
+[compartida]
+   path = /samba
+   browseable = yes
+   read only = no
+   writable = yes
+   valid users = adrian
+   guest ok = no
+   create mask = 0770
+   directory mask = 0770
+   force user = adrian
+
+sudo systemctl restart smbd
+sudo systemctl enable smbd
+sudo systemctl status smbd
+
+sudo chmod -R 777 /samba
+sudo systemctl restart smbd
+
+Comandos usados ​​practica 3
+
+=============================================================
+
+su
+date
+sudo apt update && sudo apt upgrade -y
+sudo apt install samba krb5-user winbind smbclient dnsutils -y
+Durante la instalación de Kerberos, escribe:
+
+Default Kerberos realm: SO3.INET solo una vez
+
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+
+sudo samba-tool domain provision --use-rfc2307 --interactive
+
+Realm	SO3.INET
+Domain	SO3
+Server Role	dc
+DNS backend	SAMBA_INTERNAL
+DNS forwarder IP	8.8.8.8
+Administrator password	leandro@321
+
+sudo systemctl stop smbd nmbd winbind
+sudo systemctl disable smbd nmbd winbind
+
+sudo systemctl unmask samba-ad-dc
+sudo systemctl enable samba-ad-dc
+sudo systemctl start samba-ad-dc
+sudo systemctl status samba-ad-dc
+
+sudo samba-tool domain info 127.0.0.1
+
+sudo samba-tool user create lanegracubana 2025-0414llae
+sudo samba-tool user list
+
+sudo nano /etc/resolv.conf
+
+borramos todo
+
+search SO3.INET
+nameserver 127.0.0.1
+
+host -t A so3.inet
+host -t SRV _ldap._tcp.SO3.INET
+
+
+en CMD windows  ejecuta:
+
+ipconfig /flushdns
+nslookup so3.inet
+ping so3.inet
+
+window+r  sysdm.cpl
+
+SO3.INET
+
+Usuario: Administrator
+Contraseña: leandro@321
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
