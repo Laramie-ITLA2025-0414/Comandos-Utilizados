@@ -1,5 +1,5 @@
 Práctica 1: Instalación y Configuración de Docker (1 Pts)
-
+=============================================================
 1. Instalar Docker
 
 sudo apt update
@@ -43,7 +43,7 @@ Pega esto:
 
 
 Práctica 2: Instalación de Portainer
-
+=============================================================
 
 1. Descargar e instalar Portainer
 
@@ -75,9 +75,7 @@ https://127.0.0.1:9443
 
 
 \*\*Práctica 3: Despliegue de WordPress con Docker-Compose\*\* 
-
-
-
+=============================================================
 
 
 \*\*1. Instalar Docker-Compose\*\*
@@ -187,6 +185,7 @@ sudo docker-compose up -d
 \*\*Ve a tu navegador:\*\*
 
 http://127.0.0.1:8080
+
 
 
 
