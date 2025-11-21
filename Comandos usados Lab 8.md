@@ -1,0 +1,308 @@
+
+**Práctica 1: Instalación y Configuración de Docker (1 Pts)**
+---
+
+
+
+**1. Instalar Docker**
+
+
+
+sudo apt update
+
+sudo apt install docker.io
+
+sudo systemctl start docker
+
+sudo systemctl enable docker
+
+**2. Descargar imagen de NGINX**
+
+
+sudo docker pull nginx
+
+
+**3. Crear contenedor NGINX**
+
+
+
+sudo docker run -d --name nginx-web -p 8888:80 -v /home/website:/usr/share/nginx/html nginx
+
+
+
+**4. Crear página HTML**
+
+
+sudo nano /home/website/index.html
+
+
+
+
+
+Pega esto:
+
+
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+</head>
+
+<body>
+
+<h1>Laramie Leandro Alcántara Encarnación</h1>
+
+<p>Matrícula: 2025-0414</p>
+
+</body>
+
+</html>
+
+```
+
+
+
+
+**### 5. Acceder en el navegador**
+
+```
+
+127.0.0.1:8888
+
+
+
+
+
+###### **Práctica 2: Instalación de Portainer** 
+
+
+
+
+
+**1. Descargar e instalar Portainer**
+
+
+
+sudo docker pull portainer/portainer-ce
+
+
+
+
+
+
+
+**2. Crear volumen para Portainer**
+
+
+
+sudo docker volume create portainer\_data
+
+
+
+
+
+**3. Crear contenedor de Portainer**
+
+
+
+sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer\_data:/data portainer/portainer-ce
+
+
+
+
+
+**4. Acceder a Portainer**
+
+
+
+sudo docker restart portainer
+
+
+
+Luego espera unos 30 segundos e intenta acceder de nuevo:
+
+```
+
+https://127.0.0.1:9443
+
+
+
+
+
+**Práctica 3: Despliegue de WordPress con Docker-Compose** 
+
+
+
+
+
+**1. Instalar Docker-Compose**
+
+
+
+sudo apt install docker-compose
+
+
+
+**2. Crear archivo docker-compose.yml**
+
+
+
+mkdir wordpress
+
+cd wordpress
+
+sudo nano docker-compose.yml
+
+
+
+
+
+Pega esto:
+
+
+
+version: '3.8'
+
+
+
+services:
+
+&nbsp; db:
+
+&nbsp;   image: mysql:5.7
+
+&nbsp;   environment:
+
+&nbsp;     MYSQL\_ROOT\_PASSWORD: root123
+
+&nbsp;     MYSQL\_DATABASE: wordpress\_db
+
+&nbsp;     MYSQL\_USER: wordpress\_user
+
+&nbsp;     MYSQL\_PASSWORD: wordpress\_pass
+
+&nbsp;   volumes:
+
+&nbsp;     - db\_data:/var/lib/mysql
+
+
+
+&nbsp; wordpress:
+
+&nbsp;   image: wordpress:latest
+
+&nbsp;   environment:
+
+&nbsp;     WORDPRESS\_DB\_HOST: db:3306
+
+&nbsp;     WORDPRESS\_DB\_NAME: wordpress\_db
+
+&nbsp;     WORDPRESS\_DB\_USER: wordpress\_user
+
+&nbsp;     WORDPRESS\_DB\_PASSWORD: wordpress\_pass
+
+&nbsp;   ports:
+
+&nbsp;     - "8080:80"
+
+&nbsp;   volumes:
+
+&nbsp;     - wordpress\_data:/var/www/html
+
+&nbsp;   depends\_on:
+
+&nbsp;     - db
+
+
+
+volumes:
+
+&nbsp; db\_data:
+
+&nbsp; wordpress\_data:
+
+
+
+
+
+**3. Desplegar contenedores**
+
+
+
+sudo docker-compose down
+
+sudo docker-compose up -d
+
+
+
+**sudo docker-compose ps**
+
+
+
+**Ve a tu navegador:**
+
+http://127.0.0.1:8080
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
