@@ -1,0 +1,278 @@
+Práctica 1: Instalacion y acceso a webmin (practica: mostrar de forma practica como instalar Webmin)
+=============================================================
+
+sudo apt update && sudo apt upgrade -y
+
+Agrega el repositorio oficial de Webmin:
+
+curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
+
+sudo sh setup-repos.sh
+
+Está ejecutando el script setup-repos.sh con privilegios de superusuario.
+
+Instala Webmin:
+
+sudo apt install webmin -y
+
+Paso 3: Verificar que Webmin está corriendo
+
+sudo systemctl status webmin
+
+
+Abre tu navegador web e ingresa a:
+
+https://tu_ip_del_servidor:10000
+
+
+Práctica 2:Despliegue de una VM con terraform en digital Ocean
+
+=============================================================
+Paso 1: Instalar Terraform
+
+wget -4 -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform -y
+
+Paso 2: Verificar que Terraform se instaló
+
+terraform --version
+
+
+Paso 3: Generar llave SSH
+
+ssh-keygen -t rsa -b 4096 -N ""
+
+
+Paso 4: Ver tu llave pública
+
+cat ~/.ssh/id_rsa.pub
+
+Paso 6: Subir tu llave SSH a DigitalOcean
+
+Click en "Settings"
+click en "Security"
+Baja hasta la sección "SSH keys"
+Click en el botón azul "Add SSH Key"
+Name: Escribe debian
+
+Ahora verás tu llave listada. Debajo del nombre verás un código como: aa:bb:cc:dd:ee:ff:11:22:33:44:55:66:77:88:99:00
+
+COPIA ESE CÓDIGO COMPLETO (ese es tu fingerprint). Lo necesitarás después.
+
+Paso 7: Obtener Token API de DigitalOcean
+
+Click en "API" (abajo en el menú)
+Click en el botón "Generate New Token"
+Token name:  terraform
+Write (Full Access)
+
+COPIA TODO ESE TOKEN (solo lo verás una vez, si cierras la página lo pierdes)
+
+CREAR ARCHIVOS DE TERRAFORM
+
+Paso 8: Crear directorio para el proyecto
+
+mkdir ~/terraform-do
+cd ~/terraform-do
+
+
+Paso 9: Crear archivo main.tf
+
+cat > main.tf << 'EOF'
+terraform {
+  required_providers {
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.0"
+    }
+  }
+}
+
+provider "digitalocean" {
+  token = var.do_token
+}
+
+resource "digitalocean_droplet" "os3vm" {
+  image    = "ubuntu-22-04-x64"
+  name     = "OS3vm"
+  region   = "nyc1"
+  size     = "s-1vcpu-1gb"
+  ssh_keys = [var.ssh_fingerprint]
+}
+
+output "ip_address" {
+  value       = digitalocean_droplet.os3vm.ipv4_address
+  description = "IP pública de la VM"
+}
+EOF
+
+Verificar que se creó main.tf
+
+cat main.tf
+
+
+Paso 11: Crear archivo variables.tf
+
+cat > variables.tf << 'EOF'
+variable "do_token" {
+  description = "DigitalOcean API Token"
+  type        = string
+  sensitive   = true
+}
+
+variable "ssh_fingerprint" {
+  description = "SSH Key Fingerprint"
+  type        = string
+}
+EOF
+
+Verificar que se creó variables.tf
+
+cat variables.tf
+
+Paso 13: Crear archivo terraform.tfvars con TUS datos
+
+nano terraform.tfvars
+
+do_token         = ""
+ssh_fingerprint  = ""
+
+Verificar que terraform.tfvars se guardó
+cat terraform.tfvars
+
+Inicializar Terraform
+terraform init
+
+Ver el plan (qué va a crear)
+terraform plan
+
+Crear la VM (ESTE ES EL PASO IMPORTANTE)
+terraform apply
+
+Escribe `yes`
+
+
+
+Práctica 4: Comandos Ad-Hoc 
+=============================================================
+
+
+Crear archivos en el escritorio de windows 
+
+ansible win -m win_copy -a 'src=C:/Users/ansible/Desktop/nombre.txt dest=C:/Users/ansible/Documents/nombre.txt remote_src=yes'
+
+
+ansible ansible1 -m reboot -b
+
+
+abrir otra terminal
+
+su - ansible
+
+ansible linux -m ping
+
+
+
+Práctica 5: Playbooks
+=============================================================
+
+
+nano notepad.yml
+
+---
+- name: Instalar Notepad++ en Windows
+  hosts: win
+  tasks:
+    - name: Crear directorio temporal
+      win_file:
+        path: C:\temp
+        state: directory
+ 
+    - name: Descargar Notepad++
+      win_get_url:
+        url: https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.6.2/npp.8.6.2.Installer.x64.exe
+        dest: C:\temp\notepad-installer.exe
+ 
+    - name: Instalar Notepad++
+      win_package:
+        path: C:\temp\notepad-installer.exe
+        arguments: /S
+        state: present
+        product_id: Notepad++
+ 
+    - name: Verificar instalación
+      win_stat:
+        path: C:\Program Files\Notepad++\notepad++.exe
+      register: notepad_installed
+ 
+    - name: Mostrar resultado
+      debug:
+        msg: "Notepad++ instalado correctamente"
+      when: notepad_installed.stat.exists
+
+
+Para que se descargue
+ansible-playbook notepad.yml
+
+
+
+Crea un playbook en la maquina ansible1 (linux) para que instale NGINX e inicie el servicio
+
+systemctl status nginx  --- en digital ocean
+
+
+
+nano nginx.yml
+
+
+---
+- name: Instalar y configurar NGINX en Linux
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Actualizar cache de paquetes
+      apt:
+        update_cache: yes
+ 
+    - name: Instalar NGINX
+      apt:
+        name: nginx
+        state: present
+ 
+    - name: Iniciar servicio NGINX
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+ 
+    - name: Verificar que NGINX está corriendo
+      service:
+        name: nginx
+      register: nginx_status
+ 
+    - name: Mostrar estado de NGINX
+      debug:
+        msg: "NGINX está {{ nginx_status.status.ActiveState }}"
+ 
+    - name: Mostrar URL de acceso
+      debug:
+        msg: "Accede a: http://{{ ansible_default_ipv4.address }}"
+
+
+Para que se descargue
+ansible-playbook nginx.yml
+
+
+Verificar NGINX en Linux:
+systemctl status nginx
+
+
+
+
+
+
+
+
+
+
